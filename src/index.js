@@ -59,6 +59,17 @@ const TASKS = [{
                     .then(img => utils.addToDom(tgt, img))
     }
 },{
+    title: 'Load img from URL + translateZ',
+    task: () => {
+        return utils.loadImage()
+                    .then(img => {
+                        img.style.transform = 'translateZ(0)';
+                        img.style.webkitTransform = 'translateZ(0)';
+                        return img;
+                    })
+                    .then(img => utils.addToDom(tgt, img))
+    }
+},{
     title: 'Load img from JSON base64',
     task() {
         let b64 = imagesJSON[utils.pickImageName() + '.jpg'];
@@ -129,6 +140,7 @@ var TaskRunner = React.createClass({
                 { this.state.stats && <div style={ { display: 'inline-block', fontSize: 12 } } ref="result">
                 total={ this.state.stats.duration }, avg={ this.state.stats.duration / this.state.stats.count }
                 </div> }
+                <br/><br/>
             </div>
         )
     }
