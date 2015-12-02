@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="./src/images.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <style>
+    #tgt img {
+        width:800px;
+        height:600px;
+    }
+    #tgt div {
+        width:800px;
+        height:600px;
+        background-size: cover;
+        background-position: center center;
+        display:inline-block;
+    }
+    #tgt {
+        margin-top:10px;
+    }
+    </style>
+    <body>
+        <h1>Images load benchmark</h1>
+        <div id="root"></div>
+        <div id="tgt"></div>
+    </body>
+    <script type="text/javascript" src="bundle.js" charset="utf-8"></script>
+</html>
