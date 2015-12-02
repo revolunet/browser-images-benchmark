@@ -116,24 +116,31 @@ var Select = React.createClass({
 var TaskRunner = React.createClass({
     getInitialState() {
         return {
-            stats: null
+            stats: null,
+            loading: false
         }
     },
     start() {
-        launchTask(this.props.task, this.props.iterations).then(stats => {
-            this.setState({
-                stats: stats
-            }, () => {
-                if (this.props.onFinished) {
-                    this.props.onFinished(stats);
-                }
-            });
-        });
+        this.setState({
+            loading: true
+        }, () => {
+            launchTask(this.props.task, this.props.iterations).then(stats => {
+                this.setState({
+                    loading: false,
+                    stats: stats
+                }, () => {
+                    if (this.props.onFinished) {
+                        this.props.onFinished(stats);
+                    }
+                });
+            }).done();
+        })
+        
     },
     render() {
         return (
             <div>
-                <button onClick={ this.start }>▶</button>
+                <button disabled={ this.state.loading } onClick={ this.start }>▶</button>
                 &nbsp;
                 <b>{ this.props.task.title}</b>
                 &nbsp;&nbsp;
