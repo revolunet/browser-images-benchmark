@@ -58,7 +58,7 @@ const TASKS = [{
     title: 'Load img from URL',
     task: () => {
         return utils.loadImage()
-                    .then(img => utils.addToDom(tgt, img))
+                    .then(img => utils.addToDom(tgt, img));
     }
 },{
     title: 'Load img from URL + translateZ',
@@ -94,10 +94,9 @@ const TASKS = [{
 
 var tgt = document.getElementById('tgt');
 
-function launchTask(task, count=100) {
-    return utils.repeat(count, task.task);
+function launchTask(task, count=100, onProgress) {
+    return utils.repeat(count, task.task, onProgress);
 }
-
 
 function updateWebGlStats() {
     document.getElementById('webgl-info').innerHTML = tableify(getWebGLConstants());
@@ -125,7 +124,12 @@ var TaskRunner = React.createClass({
         this.setState({
             loading: true
         }, () => {
-            launchTask(this.props.task, this.props.iterations).then(stats => {
+            const progressCallback = (stats) => {
+                if (this.props.onProgress) {
+                    this.props.onProgress(stats);
+                }
+            }
+            launchTask(this.props.task, this.props.iterations, progressCallback).then(stats => {
                 this.setState({
                     loading: false,
                     stats: stats
@@ -134,7 +138,9 @@ var TaskRunner = React.createClass({
                         this.props.onFinished(stats);
                     }
                 });
-            }).done();
+            }).catch((e) => {
+                console.error(e);
+            });
         })
         
     },
@@ -148,6 +154,8 @@ var TaskRunner = React.createClass({
                 { this.state.stats && <div style={ { display: 'inline-block', fontSize: 12 } } ref="result">
                 total={ this.state.stats.duration }, avg={ this.state.stats.duration / this.state.stats.count }
                 </div> }
+                <br/>
+                <pre>{ this.props.task.task.toString() }</pre>
                 <br/><br/>
             </div>
         )
@@ -169,12 +177,17 @@ var Tasks = React.createClass({
         this.iterations = findDOMNode(this.refs.iterations);
     },
     onFinished(stats) {
+        // this.setState({
+        //     count: this.state.count + stats.count
+        // });
+    },
+    onProgress(stats) {
         this.setState({
-            count: this.state.count + stats.count
+            count: this.state.count + 1
         });
     },
     renderTask(task, i) {
-        return <TaskRunner onFinished={ this.onFinished } iterations={ this.iterations && parseInt(this.iterations.value, 10) || this.props.iterations } key={ i } task={ task }/>;
+        return <TaskRunner onFinished={ this.onFinished } onProgress={ this.onProgress } iterations={ this.iterations && parseInt(this.iterations.value, 10) || this.props.iterations } key={ i } task={ task }/>;
     },
     onIterationsChange() {
         this.forceUpdate();

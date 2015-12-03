@@ -25,7 +25,6 @@ export default function getWebGLConstants() {
     var i, j, limit, value, results, item, key;
     for (i = 0; i < Object.keys(webglStats).length; i++) {
         key = Object.keys(webglStats)[i];
-        console.log(key);
         value = gl.getParameter(gl[key]);
         if (value instanceof Int32Array) {
             value = value[0] + ', ' + value[1];

@@ -23,9 +23,16 @@ function time(promise, stats={}) {
     });
 }
 
-function repeat(count, job) {
-    return time(Array.from(new Array(count), () => null).reduce(function(promise, item) {
+function repeat(count, job, progress) {
+    return time(Array.from(new Array(count), () => null).reduce(function(promise, item, index) {
         return promise.then(function() {
+            if (progress) {
+                progress({
+                    index,
+                    count
+                });
+            }
+            // skip errors
             return job().catch(()=>{});
         });
     }, Promise.resolve()), {
@@ -33,7 +40,7 @@ function repeat(count, job) {
     });
 }
 
-const pickImageName = () => `thumb-${pad(randomInt(1, 120 + 1), '0', 4)}`;
+const pickImageName = () => `thumb-${pad(randomInt(1, 120), '0', 4)}`;
 
 const pickImage = () => `images/${pickImageName()}.jpg`;
 
@@ -56,8 +63,12 @@ function loadImage({src, preventCache=true} = {}) {
 
     return new Promise((resolve, reject) => {
         let img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.onload = () => {
+            resolve(img);
+        }
+        img.onerror = () => {
+            reject(img);
+        }
         img.src = imageUrl;
         return img;
     });
