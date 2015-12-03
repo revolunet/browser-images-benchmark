@@ -9,7 +9,7 @@ require('babel-polyfill');
 
 import config from './config';
 import utils from './utils';
-import getWebGLConstants from './getWebGLConstants';
+import getDeviceInfos from './getDeviceInfos';
 
 import imagesJSON from './images.json';
 
@@ -92,16 +92,9 @@ const TASKS = [{
     }
 }];
 
-var tgt = document.getElementById('tgt');
-
 function launchTask(task, count=100, onProgress) {
     return utils.repeat(count, task.task, onProgress);
 }
-
-function updateWebGlStats() {
-    document.getElementById('webgl-info').innerHTML = tableify(getWebGLConstants());
-}
-
 
 var Select = React.createClass({
   render: function() {
@@ -214,7 +207,16 @@ var tasks = React.createElement(Tasks, {
     tasks: TASKS
 });
 
+
+
 ReactDOM.render(tasks, document.getElementById('root'));
 
-updateWebGlStats();
+
+var tgt = document.getElementById('tgt');
+
+function updateDeviceInfos() {
+    document.getElementById('device-info').innerHTML = tableify(getDeviceInfos());
+}
+
+updateDeviceInfos();
 
