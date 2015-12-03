@@ -17,7 +17,8 @@
     "bluebird": "3.0.6",
     "browser-request": "0.3.3",
     "react": "0.14.3",
-    "react-dom": "0.14.3"
+    "react-dom": "0.14.3",
+    "tableify": "1.0.0"
   },
   "devDependencies": {
     "babel-core": "6.2.1",

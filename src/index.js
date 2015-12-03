@@ -3,11 +3,13 @@ import React from 'react';
 import ReactDOM, { findDOMNode } from 'react-dom';
 import Promise from 'bluebird';
 import request from 'browser-request';
+import tableify from 'tableify';
 
 require('babel-polyfill');
 
 import config from './config';
 import utils from './utils';
+import getWebGLConstants from './getWebGLConstants';
 
 import imagesJSON from './images.json';
 
@@ -96,11 +98,10 @@ function launchTask(task, count=100) {
     return utils.repeat(count, task.task);
 }
 
-// Promise.mapSeries(TASKS, (task) => {
-//     return launchTask(task).then(stats => {
-//         console.log('FINISHED', task.title, stats);
-//     }).then(() => Promise.delay(1000));
-// });
+
+function updateWebGlStats() {
+    document.getElementById('webgl-info').innerHTML = tableify(getWebGLConstants());
+}
 
 
 var Select = React.createClass({
@@ -201,3 +202,6 @@ var tasks = React.createElement(Tasks, {
 });
 
 ReactDOM.render(tasks, document.getElementById('root'));
+
+updateWebGlStats();
+
